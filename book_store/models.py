@@ -2,9 +2,10 @@ from django.db import models
 
 
 class Cover(models.Model):
-    COVER_TYPE = (("SOFT", "SOFTBACK"), ("HARD", "HARDBACK"))
-    cover = models.CharField(
-        choices=COVER_TYPE, default="SOFT", max_length=200)
+    COVER_TYPE = (("SOFT", "SOFTBACK"), ("HARD", "HARDBACK"), 
+    ("SOFT SIGNED", "SOFTBACK SIGNED"), ("HARD SIGNED", "HARDBACK SIGNED"))
+    cover = models.CharField(choices=COVER_TYPE, default="SOFT", max_length=200)
+    signed_by_author = models.BooleanField(default=False)
 
     def __str__(self):
         return self.cover
@@ -15,6 +16,7 @@ class Book(models.Model):
     # one-to-many relationship (one book can have only one type of cover, but this same cover can have lot of books)
     cover = models.ForeignKey(Cover, on_delete=models.CASCADE)
     pub_date = models.DateField("Release date")
+    genre = models.ManyToManyField("Genre")
 
     def __str__(self):
         return self.name
@@ -42,15 +44,14 @@ class BookAuthor(models.Model):
         return f"{self.author.author} - {self.book.name}"
 
 
-class Gendre(models.Model):
-    GENDRES = (("SCI-FI", "SCI-FI"), ("ACTION", "ACTION"),
+class Genre(models.Model):
+    GENRES = (("SCI-FI", "SCI-FI"), ("ACTION", "ACTION"),
                ("FANTASY", "FANTASY"), ("THILER", "THILER"), ("OTHER", "OTHER"))
-    gender = models.CharField("Gender of book:",
-                               choices=GENDRES, default="OTHER", max_length=20)
-    book = models.ManyToManyField(Book)
+    genre = models.CharField("Genre of book:",
+                               choices=GENRES, default="OTHER", max_length=20)
 
     def __str__(self):
-        return self.gender
+        return self.genre
 
 
 # Orders

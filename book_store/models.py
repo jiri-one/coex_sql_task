@@ -45,7 +45,7 @@ class BookAuthor(models.Model):
 class Gendre(models.Model):
     GENDRES = (("SCI-FI", "SCI-FI"), ("ACTION", "ACTION"),
                ("FANTASY", "FANTASY"), ("THILER", "THILER"), ("OTHER", "OTHER"))
-    gender = models.CharField("Is this book authors first book:",
+    gender = models.CharField("Gender of book:",
                                choices=GENDRES, default="OTHER", max_length=20)
     book = models.ManyToManyField(Book)
 

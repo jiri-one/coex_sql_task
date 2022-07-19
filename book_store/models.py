@@ -34,11 +34,8 @@ class Author(models.Model):
 class BookAuthor(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
-    YES_OR_NO = (("Y", "Yes"), ("N", "No"))
-    authors_first_book = models.CharField("Is this book authors first book:", 
-                                          choices=YES_OR_NO, default="N", max_length=3)
-    authors_award_for_book = models.CharField(
-        "Recieved author prize for this book:", choices=YES_OR_NO, default="N", max_length=3)
+    authors_first_book = models.BooleanField("This is authors first book.", default=False)
+    authors_award_for_book = models.BooleanField("The author has received an award for this book.", default=False)
 
     def __str__(self):
         return f"{self.author.author} - {self.book.name}"
@@ -47,8 +44,7 @@ class BookAuthor(models.Model):
 class Genre(models.Model):
     GENRES = (("SCI-FI", "SCI-FI"), ("ACTION", "ACTION"),
                ("FANTASY", "FANTASY"), ("THILER", "THILER"), ("OTHER", "OTHER"))
-    genre = models.CharField("Genre of book:",
-                               choices=GENRES, default="OTHER", max_length=20)
+    genre = models.CharField("Genre of book:", choices=GENRES, default="OTHER", max_length=20)
 
     def __str__(self):
         return self.genre

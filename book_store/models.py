@@ -38,19 +38,20 @@ class BookAuthor(models.Model):
     authors_first_book = models.BooleanField("This is authors first book.", default=False)
     authors_award_for_book = models.BooleanField("The author has received an award for this book.", default=False)
 
+    class Meta:
+        """Ensure that author will have only one first book on SQL level."""
+        constraints = [models.UniqueConstraint(
+            fields=['author', 'authors_first_book'],
+            condition=models.Q(authors_first_book=True),
+            name='unique_authors_first_book')]
+    
     def clean(self):
-        """Ensure that author will have only one first book."""
+        """Ensure that author will have only one first book on Django level."""
         author_has_first_book = BookAuthor.objects.filter(
             models.Q(author=self.author) & 
             models.Q(authors_first_book=True)).values() 
         if author_has_first_book and self.authors_first_book:
             raise ValidationError(f"{self.author} has first book already!")
-    
-    # another solution for one-author=one-first-book, but not so good and clean
-    # constraints = [
-    # models.UniqueConstraint(fields=['author', 'authors_first_book'], condition=models.Q(authors_first_book=True), name='unique_authors_first_book')
-    #  ]
-
 
     def __str__(self):
         return f"{self.author.author} - {self.book.name}"
